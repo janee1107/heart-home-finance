@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, ChevronRight, User, Calendar as CalendarIcon, CreditCard, TrendingUp } from 'lucide-react';
+import { Plus, ChevronRight, User, Calendar as CalendarIcon, CreditCard, TrendingUp, BarChart3 } from 'lucide-react';
 import { ZenCard } from '../ZenCard';
 import { MOODS, MoodType } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -104,19 +104,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <span className="font-bold text-foreground">還款規劃</span>
           </ZenCard>
           <ZenCard 
-            onClick={() => onNavigate('reality')} 
-            className="col-span-2 flex items-center justify-between py-6 px-8 hover:border-muted-foreground/30 transition-colors bg-foreground text-background"
+            onClick={() => onNavigate('insight')} 
+            className="flex flex-col items-center justify-center gap-3 py-8 hover:border-muted-foreground/30 transition-colors"
           >
-            <div className="flex items-center gap-5">
-              <div className="p-3 bg-background/10 rounded-2xl text-background/80">
-                <TrendingUp size={22} />
-              </div>
-              <div>
-                <p className="font-bold text-lg">Reality Mode</p>
-                <p className="text-xs text-background/60 mt-0.5">面對現實，找回安全感</p>
-              </div>
+            <div className="p-3 bg-mood-hope/30 rounded-2xl text-mood-hope-foreground">
+              <BarChart3 size={24} />
             </div>
-            <ChevronRight className="text-background/50" />
+            <span className="font-bold text-foreground">Insight</span>
+          </ZenCard>
+          <ZenCard 
+            onClick={() => onNavigate('reality')} 
+            className="flex flex-col items-center justify-center gap-3 py-8 hover:border-muted-foreground/30 transition-colors"
+          >
+            <div className="p-3 bg-mood-numb/30 rounded-2xl text-mood-numb-foreground">
+              <TrendingUp size={24} />
+            </div>
+            <span className="font-bold text-foreground">Reality</span>
           </ZenCard>
         </section>
       </div>

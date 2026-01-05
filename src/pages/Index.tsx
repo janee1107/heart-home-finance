@@ -10,8 +10,9 @@ import { TransactionView } from '@/components/finance/views/TransactionView';
 import { CalendarView } from '@/components/finance/views/CalendarView';
 import { DebtView } from '@/components/finance/views/DebtView';
 import { RealityView } from '@/components/finance/views/RealityView';
+import { InsightView } from '@/components/finance/views/InsightView';
 
-type ViewType = 'splash' | 'home' | 'transaction' | 'calendar' | 'debt' | 'reality';
+type ViewType = 'splash' | 'home' | 'transaction' | 'calendar' | 'debt' | 'reality' | 'insight';
 
 const Index = () => {
   const [view, setView] = useState<ViewType>('splash');
@@ -229,6 +230,19 @@ const Index = () => {
         onInvestmentsChange={(v) => setInvestments(Number(v))}
         onSurvivalCostChange={(v) => setSurvivalCost(Number(v))}
         onSettingsChange={setSettings}
+        onBack={() => setView('home')}
+      />
+    );
+  }
+
+  if (view === 'insight') {
+    return (
+      <InsightView
+        transactions={transactions}
+        debts={debts}
+        savings={savings}
+        investments={investments}
+        settings={settings}
         onBack={() => setView('home')}
       />
     );
