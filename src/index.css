@@ -2,95 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Warm Stone Base */
+    --background: 40 20% 97%;
+    --foreground: 25 12% 32%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Cards with soft warmth */
+    --card: 40 33% 99%;
+    --card-foreground: 25 12% 32%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 40 33% 99%;
+    --popover-foreground: 25 12% 32%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Warm Stone */
+    --primary: 30 8% 44%;
+    --primary-foreground: 40 20% 97%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Soft Cream */
+    --secondary: 30 15% 90%;
+    --secondary-foreground: 25 12% 32%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: Warm Gray */
+    --muted: 30 12% 92%;
+    --muted-foreground: 25 6% 60%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Sage Green */
+    --accent: 85 25% 65%;
+    --accent-foreground: 85 30% 30%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 30 20% 92%;
+    --input: 30 20% 92%;
+    --ring: 30 8% 44%;
+    --radius: 1rem;
 
-    --radius: 0.5rem;
+    /* Custom Semantic Colors */
+    --stone-warm: 30 8% 44%;
+    --stone-dark: 25 12% 32%;
+    --stone-light: 25 6% 66%;
+    --cream: 40 33% 98%;
+    --cream-dark: 30 15% 90%;
+    
+    /* Mood Colors */
+    --mood-chaos: 0 45% 83%;
+    --mood-chaos-foreground: 0 28% 46%;
+    --mood-anxious: 38 38% 85%;
+    --mood-anxious-foreground: 38 24% 45%;
+    --mood-numb: 215 12% 85%;
+    --mood-numb-foreground: 215 10% 45%;
+    --mood-calm: 170 24% 81%;
+    --mood-calm-foreground: 170 20% 36%;
+    --mood-hope: 85 38% 83%;
+    --mood-hope-foreground: 85 30% 40%;
 
-    --sidebar-background: 0 0% 98%;
+    /* Financial Colors */
+    --income: 85 30% 40%;
+    --expense: 25 12% 32%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar - using warm tones */
+    --sidebar-background: 40 20% 97%;
+    --sidebar-foreground: 25 12% 32%;
+    --sidebar-primary: 30 8% 44%;
+    --sidebar-primary-foreground: 40 20% 97%;
+    --sidebar-accent: 30 15% 90%;
+    --sidebar-accent-foreground: 25 12% 32%;
+    --sidebar-border: 30 20% 92%;
+    --sidebar-ring: 30 8% 44%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 25 15% 10%;
+    --foreground: 40 20% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 25 12% 14%;
+    --card-foreground: 40 20% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 25 12% 14%;
+    --popover-foreground: 40 20% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 40 20% 90%;
+    --primary-foreground: 25 15% 12%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 25 12% 20%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 25 12% 20%;
+    --muted-foreground: 30 10% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 85 25% 45%;
+    --accent-foreground: 40 20% 95%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 25 12% 20%;
+    --input: 25 12% 20%;
+    --ring: 40 20% 80%;
+
+    --sidebar-background: 25 15% 10%;
+    --sidebar-foreground: 40 20% 95%;
+    --sidebar-primary: 40 20% 90%;
+    --sidebar-primary-foreground: 25 15% 12%;
+    --sidebar-accent: 25 12% 20%;
+    --sidebar-accent-foreground: 40 20% 95%;
+    --sidebar-border: 25 12% 20%;
+    --sidebar-ring: 40 20% 80%;
   }
 }
 
@@ -100,6 +120,84 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Hide scrollbar for cleaner mobile feel */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Zen animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes grow {
+    from {
+      stroke-dasharray: 0, 100;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.4s ease-out forwards;
+  }
+
+  .animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-grow {
+    animation: grow 1s ease-out forwards;
   }
 }
