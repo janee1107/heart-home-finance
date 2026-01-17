@@ -23,10 +23,12 @@ export interface Debt {
   monthlyPay: number;
   interest: string;
   date: string;
+  lastPaid?: string; // ISO date string of last payment
 }
 
 export interface Settings {
   includeDebtInSurvival: boolean;
+  survivalCost: number;
 }
 
 export interface TransactionForm {
@@ -40,6 +42,17 @@ export interface TransactionForm {
 
 export interface DayData {
   day: number;
+  month: number;
+  year: number;
   items: Transaction[];
   spend: number;
+}
+
+export interface AppData {
+  mood: MoodType | null;
+  savings: number;
+  investments: number;
+  debts: Debt[];
+  transactions: Transaction[];
+  settings: Settings;
 }

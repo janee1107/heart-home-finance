@@ -4,74 +4,72 @@
 
 @layer base {
   :root {
-    /* Warm Stone Base */
-    --background: 40 20% 97%;
-    --foreground: 25 12% 32%;
+    /* Warm Stone & Sage (Morandi tones) */
+    --background: 40 20% 97%; /* #F7F5F2 Warm off-white */
+    --foreground: 25 12% 32%; /* #57534E Stone 700 */
 
     /* Cards with soft warmth */
-    --card: 40 33% 99%;
+    --card: 0 0% 100%;
     --card-foreground: 25 12% 32%;
 
-    --popover: 40 33% 99%;
+    --popover: 0 0% 100%;
     --popover-foreground: 25 12% 32%;
 
-    /* Primary: Warm Stone */
-    --primary: 30 8% 44%;
+    /* Primary: Warm Stone 500 */
+    --primary: 30 8% 47%; /* #78716C */
     --primary-foreground: 40 20% 97%;
 
-    /* Secondary: Soft Cream */
-    --secondary: 30 15% 90%;
+    /* Secondary: Stone 200 for borders/backgrounds */
+    --secondary: 30 15% 90%; /* #E7E5E4 */
     --secondary-foreground: 25 12% 32%;
 
     /* Muted: Warm Gray */
     --muted: 30 12% 92%;
     --muted-foreground: 25 6% 60%;
 
-    /* Accent: Sage Green */
-    --accent: 85 25% 65%;
+    /* Accent: Sage Green for success/milestones */
+    --accent: 85 25% 65%; /* #A3B18A */
     --accent-foreground: 85 30% 30%;
 
     /* Destructive */
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 20% 92%;
-    --input: 30 20% 92%;
-    --ring: 30 8% 44%;
-    --radius: 1rem;
+    --border: 30 15% 90%; /* #E7E5E4 Stone 200 */
+    --input: 30 15% 90%;
+    --ring: 30 8% 47%;
+    --radius: 1.5rem;
 
     /* Custom Semantic Colors */
-    --stone-warm: 30 8% 44%;
+    --stone-warm: 30 8% 47%;
     --stone-dark: 25 12% 32%;
     --stone-light: 25 6% 66%;
     --cream: 40 33% 98%;
     --cream-dark: 30 15% 90%;
     
-    /* Mood Colors */
-    --mood-chaos: 0 45% 83%;
-    --mood-chaos-foreground: 0 28% 46%;
-    --mood-anxious: 38 38% 85%;
-    --mood-anxious-foreground: 38 24% 45%;
-    --mood-numb: 215 12% 85%;
-    --mood-numb-foreground: 215 10% 45%;
-    --mood-calm: 170 24% 81%;
-    --mood-calm-foreground: 170 20% 36%;
-    --mood-hope: 85 38% 83%;
-    --mood-hope-foreground: 85 30% 40%;
+    /* 4 Simple Mood Colors */
+    --mood-happy: 45 90% 88%;
+    --mood-happy-foreground: 35 80% 40%;
+    --mood-relaxed: 200 40% 88%;
+    --mood-relaxed-foreground: 200 30% 40%;
+    --mood-sad: 215 25% 85%;
+    --mood-sad-foreground: 215 20% 40%;
+    --mood-annoyed: 15 60% 88%;
+    --mood-annoyed-foreground: 15 50% 40%;
 
     /* Financial Colors */
-    --income: 85 30% 40%;
-    --expense: 25 12% 32%;
+    --financial-income: 85 30% 45%;
+    --financial-expense: 25 12% 32%;
 
     /* Sidebar - using warm tones */
     --sidebar-background: 40 20% 97%;
     --sidebar-foreground: 25 12% 32%;
-    --sidebar-primary: 30 8% 44%;
+    --sidebar-primary: 30 8% 47%;
     --sidebar-primary-foreground: 40 20% 97%;
     --sidebar-accent: 30 15% 90%;
     --sidebar-accent-foreground: 25 12% 32%;
-    --sidebar-border: 30 20% 92%;
-    --sidebar-ring: 30 8% 44%;
+    --sidebar-border: 30 15% 90%;
+    --sidebar-ring: 30 8% 47%;
   }
 
   .dark {
@@ -103,6 +101,15 @@
     --input: 25 12% 20%;
     --ring: 40 20% 80%;
 
+    --mood-happy: 45 60% 25%;
+    --mood-happy-foreground: 45 80% 80%;
+    --mood-relaxed: 200 30% 25%;
+    --mood-relaxed-foreground: 200 40% 80%;
+    --mood-sad: 215 20% 25%;
+    --mood-sad-foreground: 215 25% 80%;
+    --mood-annoyed: 15 40% 25%;
+    --mood-annoyed-foreground: 15 50% 80%;
+
     --sidebar-background: 25 15% 10%;
     --sidebar-foreground: 40 20% 95%;
     --sidebar-primary: 40 20% 90%;
@@ -121,6 +128,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
 
   /* Hide scrollbar for cleaner mobile feel */

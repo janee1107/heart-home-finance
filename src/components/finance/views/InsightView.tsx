@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { BarChart3, Download, TrendingUp, TrendingDown, PiggyBank, Coffee, Leaf } from 'lucide-react';
+import { BarChart3, Download, TrendingUp, TrendingDown, Leaf, Calendar } from 'lucide-react';
 import { ZenHeader } from '../ZenHeader';
 import { ZenCard } from '../ZenCard';
 import { ZenButton } from '../ZenButton';
 import { Transaction, Debt, Settings } from '@/types/finance';
 import { formatMoney } from '@/lib/formatters';
-import { FEELING_TAGS } from '@/lib/constants';
 
 interface InsightViewProps {
   transactions: Transaction[];
@@ -26,6 +25,8 @@ interface MonthlyStats {
   wantExpense: number;
   transactionCount: number;
   feelingCounts: Record<string, number>;
+  zeroSpendDays: number;
+  dailyAverage: number;
 }
 
 export const InsightView: React.FC<InsightViewProps> = ({
@@ -37,10 +38,12 @@ export const InsightView: React.FC<InsightViewProps> = ({
   onBack,
 }) => {
   const [showExportSuccess, setShowExportSuccess] = useState(false);
+  const today = new Date();
 
   // Calculate monthly stats
   const monthlyStats = useMemo(() => {
     const statsMap = new Map<string, MonthlyStats>();
+    const daysWithSpending = new Map<string, Set<number>>();
     
     transactions.forEach(tx => {
       const key = `${tx.year}-${tx.month}`;
@@ -56,7 +59,10 @@ export const InsightView: React.FC<InsightViewProps> = ({
           wantExpense: 0,
           transactionCount: 0,
           feelingCounts: {},
+          zeroSpendDays: 0,
+          dailyAverage: 0,
         });
+        daysWithSpending.set(key, new Set());
       }
       
       const stats = statsMap.get(key)!;
@@ -66,6 +72,7 @@ export const InsightView: React.FC<InsightViewProps> = ({
         stats.income += tx.amount;
       } else {
         stats.expense += tx.amount;
+        daysWithSpending.get(key)?.add(tx.day);
         if (tx.isNeed) {
           stats.needExpense += tx.amount;
         } else {
@@ -79,6 +86,14 @@ export const InsightView: React.FC<InsightViewProps> = ({
         stats.feelingCounts[f] = (stats.feelingCounts[f] || 0) + 1;
       });
     });
+
+    // Calculate zero spend days and daily average
+    statsMap.forEach((stats, key) => {
+      const daysInMonth = new Date(stats.year, stats.month, 0).getDate();
+      const spendDays = daysWithSpending.get(key)?.size || 0;
+      stats.zeroSpendDays = daysInMonth - spendDays;
+      stats.dailyAverage = spendDays > 0 ? Math.round(stats.expense / spendDays) : 0;
+    });
     
     return Array.from(statsMap.values()).sort((a, b) => {
       if (a.year !== b.year) return b.year - a.year;
@@ -86,10 +101,12 @@ export const InsightView: React.FC<InsightViewProps> = ({
     });
   }, [transactions]);
 
-  // Current month (default to latest or Jan 2026)
-  const currentStats = monthlyStats[0] || {
-    month: 1,
-    year: 2026,
+  // Current month stats
+  const currentStats = monthlyStats.find(
+    s => s.month === today.getMonth() + 1 && s.year === today.getFullYear()
+  ) || {
+    month: today.getMonth() + 1,
+    year: today.getFullYear(),
     income: 0,
     expense: 0,
     balance: 0,
@@ -97,18 +114,27 @@ export const InsightView: React.FC<InsightViewProps> = ({
     wantExpense: 0,
     transactionCount: 0,
     feelingCounts: {},
+    zeroSpendDays: 0,
+    dailyAverage: 0,
   };
 
-  // Top feelings
+  // Top 3 largest expenses this month
+  const top3Expenses = useMemo(() => {
+    return transactions
+      .filter(t => t.type === 'expense' && t.month === currentStats.month && t.year === currentStats.year)
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 3);
+  }, [transactions, currentStats]);
+
+  // Top feelings (word cloud data)
   const topFeelings = useMemo(() => {
     return Object.entries(currentStats.feelingCounts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 5);
+      .slice(0, 6);
   }, [currentStats]);
 
   // Export all data to CSV
   const exportToCSV = () => {
-    // Transactions CSV
     const txHeaders = ['日期', '年', '月', '日', '類型', '名稱', '金額', '必需/想要', '感受', '備註'];
     const txRows = transactions.map(tx => [
       tx.date,
@@ -123,7 +149,6 @@ export const InsightView: React.FC<InsightViewProps> = ({
       tx.note.replace(/,/g, '，').replace(/\n/g, ' '),
     ]);
     
-    // Debts CSV
     const debtHeaders = ['名稱', '總金額', '剩餘金額', '每月還款', '利率%', '扣款日'];
     const debtRows = debts.map(d => [
       d.name,
@@ -134,15 +159,14 @@ export const InsightView: React.FC<InsightViewProps> = ({
       d.date,
     ]);
     
-    // Settings CSV
     const settingsHeaders = ['設定', '值'];
     const settingsRows = [
       ['現金存款', savings],
       ['投資部位', investments],
+      ['每月生存成本', settings.survivalCost],
       ['含債務計算', settings.includeDebtInSurvival ? '是' : '否'],
     ];
     
-    // Combine all
     const csvContent = [
       '=== 交易紀錄 ===',
       txHeaders.join(','),
@@ -157,7 +181,6 @@ export const InsightView: React.FC<InsightViewProps> = ({
       ...settingsRows.map(row => row.join(',')),
     ].join('\n');
     
-    // Add BOM for proper Chinese encoding
     const BOM = '\uFEFF';
     const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -186,10 +209,9 @@ export const InsightView: React.FC<InsightViewProps> = ({
         action={
           <button 
             onClick={exportToCSV}
-            className="p-2 rounded-full hover:bg-secondary text-primary transition-colors flex items-center gap-1.5 text-xs font-medium"
+            className="p-2 rounded-full hover:bg-secondary text-foreground transition-colors flex items-center gap-1.5 text-xs font-medium"
           >
             <Download size={18} />
-            <span>匯出</span>
           </button>
         }
       />
@@ -197,37 +219,38 @@ export const InsightView: React.FC<InsightViewProps> = ({
       <div className="px-6 pb-24 space-y-6">
         {/* Export Success Toast */}
         {showExportSuccess && (
-          <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-mood-hope text-mood-hope-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-fade-in z-50">
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-fade-in z-50">
             ✓ 資料已匯出
           </div>
         )}
 
-        {/* Current Month Hero */}
+        {/* Monthly Flow Hero */}
         <ZenCard className="bg-foreground text-background p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-background/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
           
           <div className="relative z-10">
             <p className="text-background/60 text-xs font-bold tracking-widest uppercase mb-2">
-              {currentStats.year}年 {currentStats.month}月 概覽
+              {currentStats.year}年 {currentStats.month}月
             </p>
             
             <div className="flex items-baseline gap-2 mb-6">
-              <span className={`text-5xl font-light tracking-tight ${currentStats.balance >= 0 ? 'text-mood-hope' : 'text-mood-chaos'}`}>
+              <span className={`text-5xl font-light tracking-tight ${currentStats.balance >= 0 ? 'text-accent' : 'text-mood-annoyed'}`}>
                 {currentStats.balance >= 0 ? '+' : ''}{formatMoney(currentStats.balance)}
               </span>
               <span className="text-background/60 text-lg">結餘</span>
             </div>
             
+            {/* Income vs Expense Bar */}
             <div className="flex justify-between border-t border-background/10 pt-4">
               <div className="flex items-center gap-2">
-                <TrendingUp size={16} className="text-mood-hope" />
+                <TrendingUp size={16} className="text-accent" />
                 <div>
                   <p className="text-[10px] text-background/50">收入</p>
                   <p className="font-bold font-mono">+{formatMoney(currentStats.income)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <TrendingDown size={16} className="text-mood-chaos" />
+                <TrendingDown size={16} className="text-mood-annoyed" />
                 <div>
                   <p className="text-[10px] text-background/50">支出</p>
                   <p className="font-bold font-mono">-{formatMoney(currentStats.expense)}</p>
@@ -241,7 +264,7 @@ export const InsightView: React.FC<InsightViewProps> = ({
         <ZenCard>
           <h3 className="text-foreground font-bold mb-4 flex items-center gap-2">
             <BarChart3 size={18} className="text-muted-foreground" />
-            支出組成分析
+            支出組成
           </h3>
           
           <div className="flex h-4 w-full rounded-full overflow-hidden bg-secondary mb-3">
@@ -250,7 +273,7 @@ export const InsightView: React.FC<InsightViewProps> = ({
               style={{ width: `${needPercent}%` }}
             />
             <div 
-              className="h-full bg-mood-anxious"
+              className="h-full bg-mood-annoyed"
               style={{ width: `${100 - needPercent}%` }}
             />
           </div>
@@ -262,70 +285,78 @@ export const InsightView: React.FC<InsightViewProps> = ({
               <span className="text-foreground font-bold ml-1">{formatMoney(currentStats.needExpense)}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-mood-anxious" />
+              <div className="w-2 h-2 rounded-full bg-mood-annoyed" />
               <span>想要 {100 - needPercent}%</span>
               <span className="text-foreground font-bold ml-1">{formatMoney(currentStats.wantExpense)}</span>
             </div>
           </div>
         </ZenCard>
 
-        {/* Feelings Summary */}
-        <ZenCard>
-          <h3 className="text-foreground font-bold mb-4 flex items-center gap-2">
-            <Coffee size={18} className="text-muted-foreground" />
-            消費時的感受
-          </h3>
-          
-          {topFeelings.length > 0 ? (
-            <div className="space-y-3">
+        {/* Mood Word Cloud */}
+        {topFeelings.length > 0 && (
+          <ZenCard>
+            <h3 className="text-foreground font-bold mb-4">消費時的感受</h3>
+            <div className="flex flex-wrap gap-2">
               {topFeelings.map(([feeling, count]) => {
                 const maxCount = topFeelings[0][1];
-                const percent = Math.round((count / maxCount) * 100);
+                const size = 0.75 + (count / maxCount) * 0.5; // Scale from 0.75 to 1.25
                 return (
-                  <div key={feeling} className="flex items-center gap-3">
-                    <span className="text-sm text-foreground w-12">{feeling}</span>
-                    <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-mood-calm transition-all"
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
-                    <span className="text-xs text-muted-foreground w-8 text-right">{count}次</span>
-                  </div>
+                  <span 
+                    key={feeling}
+                    className="px-3 py-1.5 bg-secondary rounded-full text-foreground font-medium"
+                    style={{ fontSize: `${size}rem` }}
+                  >
+                    {feeling} <span className="text-muted-foreground text-xs">×{count}</span>
+                  </span>
                 );
               })}
             </div>
-          ) : (
-            <div className="text-center py-6 text-muted-foreground text-sm">
-              <Leaf size={24} className="mx-auto mb-2 opacity-50" />
-              尚無感受紀錄
-            </div>
-          )}
-        </ZenCard>
+          </ZenCard>
+        )}
 
-        {/* Monthly History */}
-        {monthlyStats.length > 1 && (
+        {/* Top 3 Expenses */}
+        {top3Expenses.length > 0 && (
           <ZenCard>
-            <h3 className="text-foreground font-bold mb-4 flex items-center gap-2">
-              <PiggyBank size={18} className="text-muted-foreground" />
-              歷史月份
-            </h3>
-            
+            <h3 className="text-foreground font-bold mb-4">Top 3 支出</h3>
             <div className="space-y-3">
-              {monthlyStats.slice(1, 6).map(stats => (
-                <div key={`${stats.year}-${stats.month}`} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                  <span className="text-sm text-foreground">{stats.year}年 {stats.month}月</span>
-                  <div className="flex items-center gap-4 text-sm">
-                    <span className="text-muted-foreground">{stats.transactionCount}筆</span>
-                    <span className={`font-bold font-mono ${stats.balance >= 0 ? 'text-mood-hope-foreground' : 'text-mood-chaos-foreground'}`}>
-                      {stats.balance >= 0 ? '+' : ''}{formatMoney(stats.balance)}
+              {top3Expenses.map((tx, i) => (
+                <div key={tx.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs font-bold text-foreground">
+                      {i + 1}
                     </span>
+                    <span className="text-sm text-foreground">{tx.name}</span>
                   </div>
+                  <span className="font-bold font-mono text-foreground">
+                    {formatMoney(tx.amount)}
+                  </span>
                 </div>
               ))}
             </div>
           </ZenCard>
         )}
+
+        {/* Coach's Notes */}
+        <ZenCard>
+          <h3 className="text-foreground font-bold mb-4 flex items-center gap-2">
+            <Calendar size={18} className="text-muted-foreground" />
+            Coach's Note
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-accent/20 rounded-2xl p-4 text-center">
+              <p className="text-3xl font-light text-accent-foreground mb-1">
+                {currentStats.zeroSpendDays}
+              </p>
+              <p className="text-xs text-muted-foreground">零消費天數</p>
+            </div>
+            <div className="bg-secondary rounded-2xl p-4 text-center">
+              <p className="text-3xl font-light text-foreground mb-1">
+                {formatMoney(currentStats.dailyAverage)}
+              </p>
+              <p className="text-xs text-muted-foreground">日均消費</p>
+            </div>
+          </div>
+        </ZenCard>
 
         {/* Export Button */}
         <ZenButton onClick={exportToCSV} variant="secondary" className="mt-4">
