@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -47,6 +52,28 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // 4 Mood colors
+        "mood-happy": {
+          DEFAULT: "hsl(var(--mood-happy))",
+          foreground: "hsl(var(--mood-happy-foreground))",
+        },
+        "mood-relaxed": {
+          DEFAULT: "hsl(var(--mood-relaxed))",
+          foreground: "hsl(var(--mood-relaxed-foreground))",
+        },
+        "mood-sad": {
+          DEFAULT: "hsl(var(--mood-sad))",
+          foreground: "hsl(var(--mood-sad-foreground))",
+        },
+        "mood-annoyed": {
+          DEFAULT: "hsl(var(--mood-annoyed))",
+          foreground: "hsl(var(--mood-annoyed-foreground))",
+        },
+        // Financial colors
+        financial: {
+          income: "hsl(var(--financial-income))",
+          expense: "hsl(var(--financial-expense))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,61 +84,25 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Custom semantic colors
-        stone: {
-          warm: "hsl(var(--stone-warm))",
-          dark: "hsl(var(--stone-dark))",
-          light: "hsl(var(--stone-light))",
-        },
-        cream: {
-          DEFAULT: "hsl(var(--cream))",
-          dark: "hsl(var(--cream-dark))",
-        },
-        mood: {
-          chaos: "hsl(var(--mood-chaos))",
-          "chaos-foreground": "hsl(var(--mood-chaos-foreground))",
-          anxious: "hsl(var(--mood-anxious))",
-          "anxious-foreground": "hsl(var(--mood-anxious-foreground))",
-          numb: "hsl(var(--mood-numb))",
-          "numb-foreground": "hsl(var(--mood-numb-foreground))",
-          calm: "hsl(var(--mood-calm))",
-          "calm-foreground": "hsl(var(--mood-calm-foreground))",
-          hope: "hsl(var(--mood-hope))",
-          "hope-foreground": "hsl(var(--mood-hope-foreground))",
-        },
-        financial: {
-          income: "hsl(var(--income))",
-          expense: "hsl(var(--expense))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        "2xl": "1.5rem",
-        "3xl": "2rem",
       },
       boxShadow: {
-        soft: "0 4px 20px -4px rgba(120, 113, 108, 0.06)",
-        card: "0 4px 24px -8px rgba(120, 113, 108, 0.08)",
-        button: "0 4px 12px -4px rgba(120, 113, 108, 0.15)",
+        soft: "0 4px 20px -4px rgba(120,113,108,0.08)",
+        card: "0 8px 30px -6px rgba(120,113,108,0.12)",
+        button: "0 4px 14px -2px rgba(120,113,108,0.15)",
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {

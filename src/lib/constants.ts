@@ -1,4 +1,4 @@
-import { CloudRain, Zap, Anchor, Wind, Sun } from 'lucide-react';
+import { Sun, Cloud, Smile, Frown, LucideIcon } from 'lucide-react';
 
 export const SUPPORT_QUOTES = [
   "你不用急著變好，先讓自己舒服一點。",
@@ -11,14 +11,15 @@ export const SUPPORT_QUOTES = [
   "你的價值，不等於你的存款數字。"
 ];
 
+// 4 Simple Moods: Happy, Relaxed, Sad, Annoyed
 export const MOODS = [
-  { id: 'chaos', label: '混亂', icon: CloudRain, colorClass: 'bg-mood-chaos text-mood-chaos-foreground' },
-  { id: 'anxious', label: '焦慮', icon: Zap, colorClass: 'bg-mood-anxious text-mood-anxious-foreground' },
-  { id: 'numb', label: '麻木', icon: Anchor, colorClass: 'bg-mood-numb text-mood-numb-foreground' },
-  { id: 'calm', label: '平靜', icon: Wind, colorClass: 'bg-mood-calm text-mood-calm-foreground' },
-  { id: 'hope', label: '希望', icon: Sun, colorClass: 'bg-mood-hope text-mood-hope-foreground' },
+  { id: 'happy', label: '開心', icon: Sun, colorClass: 'bg-mood-happy text-mood-happy-foreground' },
+  { id: 'relaxed', label: '放鬆', icon: Cloud, colorClass: 'bg-mood-relaxed text-mood-relaxed-foreground' },
+  { id: 'sad', label: '難過', icon: Frown, colorClass: 'bg-mood-sad text-mood-sad-foreground' },
+  { id: 'annoyed', label: '煩躁', icon: Smile, colorClass: 'bg-mood-annoyed text-mood-annoyed-foreground' },
 ] as const;
 
+// Feeling tags sorted positive to negative
 export const FEELING_TAGS = ['感謝', '幸福', '喜悅', '舒壓', '無感', '焦慮', '憤怒', '罪惡'];
 
 export type MoodType = typeof MOODS[number];
